@@ -2,21 +2,20 @@
 
 # Portuguese SRL
 
-
 This work was developed in the context of my Master's thesis in Data Science.
-The code is based on [AllenNLP's package](https://github.com/allenai/allennlp) and the pre-trained models used in this work came from [🤗 Transformers](https://github.com/huggingface/transformers) and [neuralmind-ai BERTimbau - Portuguese BERT](https://github.com/neuralmind-ai/portuguese-bert).
+The code is based on [AllenNLP's package](https://github.com/allenai/allennlp) and the pre-trained models used came from [🤗 Transformers](https://github.com/huggingface/transformers) and [neuralmind-ai BERTimbau - Portuguese BERT](https://github.com/neuralmind-ai/portuguese-bert).
 
-There are two branches in this repository: one with the code used to run the experiments (`reproduce`) for the thesis and one to use for predicting (`master`) (they are only slightly different). This is due to an error in the allennlp package in the version used for the experiments.
+There are three branches in this repository, which correspond to three different versions of the AllenNLP package. The branch [`v1.0.0rc3`](/v1.0.0rc3) contains the code used to train the models reported in the article. The branch [`v1.0.0`](/v1.0.0) contains the code used to test the models reported. The models were trained and tested in different versions because of a bug in version 1.0.0rc3 of AllenNLP which prevented testing some models. The main branch contains the code needed to make predictions with the trained models.
 
 ## Models
 
-The trained models can be obtained using the get_model.py script.
+The trained models can be obtained using the get_model.py script in the main branch.
 
 ```python
 python get_model.py [model name]
 ```
 
-In the following table, we present all the possible model names, which model they correspond to as well as the average F<sub>1</sub> in the cross-validation <span>PropBank.Br</span> data sets and the average F<sub>1</sub> in the Buscapé set. For more information, check the article.
+In the following table, we present all the possible model names, a small description of the model, the average F<sub>1</sub> in the cross-validation <span>PropBank.Br</span> data sets and the average F<sub>1</sub> in the Buscapé set. For more information, please refer to the article.
 
 | Model Name | F<sub>1</sub> CV PropBank.Br (in domain) | F<sub>1</sub> Buscapé (out of domain) | Explanation |
 | --------------- | ------ | ----- | ------- |
@@ -35,16 +34,21 @@ In the following table, we present all the possible model names, which model the
 | `ud_srl-pt_xlmr-large` | 77.69 | 74.91 | The (monolingual) XLM-R<sub>large</sub> model trained first in dependency parsing with the Universal Dependecies Portuguese data set and then on Portuguese SRL data |
 | `ud_srl-enpt_xlmr-large` | 77.97 | **75.05** | The (monolingual) XLM-R<sub>large</sub> model trained first in dependency parsing with the Universal Dependecies Portuguese data set, then on English SRL data (specifically a pre-processed CoNLL-2012 data set) and finally on Portuguese SRL data |
 
-## To reproduce
+## Branch v1.0.0rc3
 
-To reproduce the reported results, you need first to install allennlp and allennlp_models versions 1.0.0rc3 and [iterative-stratification](https://github.com/trent-b/iterative-stratification). Note that for Windows, you'll need to install the pytorch package v1.5.0 before, with the command from their [website](https://pytorch.org). With pip:
+To reproduce the results, it is first necessary to train the models. For that, first install the pytorch package v1.5.0 with the command from their [website](https://pytorch.org/get-started/previous-versions/) according to the CUDA version of your machine, and then allennlp, allennlp_models, [iterative-stratification](https://github.com/trent-b/iterative-stratification) and pandas.
 
 ```bash
-pip install allennlp==1.0.0rc3 allennlp_models==1.0.0rc3 iterative-stratification
+pip install allennlp==1.0.0rc3 allennlp_models==1.0.0rc3 iterative-stratification pandas
 ```
 
+Next, clone or download the `v1.0.0rc3` branch of this repository. 
 
-Download the reproduce branch of this repository. You will also need to create a folder **data** in the same directory as the python files. In that folder, put the XML data for PropBank.Br v1.1, PropBank.Br v2 and Buscapé in a folder **xml_data**. Put the conll version of PropBank.Br in a folder **conll_data**. This data can be found [here](http://www.nilc.icmc.usp.br/portlex/index.php/en/downloads).
+The data must be manually added. The code expects there to be a `data` folder (inside the repository). Within this folder, there must be 4 folders:
+* `xml_data` -- contains the XML data for PropBank.Br v1.1, PropBank.Br v2 and Buscapé. This data can be found [here](http://www.nilc.icmc.usp.br/portlex/index.php/en/downloads).
+* `conll_data` -- contains the conll version of PropBank.Br. This data can be found [here](http://www.nilc.icmc.usp.br/portlex/index.php/en/downloads).
+* `ud` -- contains the [Portuguese Universal Depdencies](https://github.com/UniversalDependencies/UD_Portuguese-Bosque/tree/master) dataset.
+* `conll-formatted-ontonotes-5.0-12` -- contains the conll formatted OntoNotes v5.0.
 
 ### Transforming XML to CoNLL data
 
@@ -81,6 +85,10 @@ python my_predict.py [path/to/model] [text/to/predict]
 ```
 
 The model has to be a folder (not an archive); the text to predict can be either a string or a text file.
+
+#Choose model
+#Install streamlit
+#Install mlxtend
 
 ## Citation
 
