@@ -135,7 +135,8 @@ class SrlReader(DatasetReader):
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
         self._domain_identifier = domain_identifier
         self.xlm = "xlm" in bert_model_name
-        self.bert_tokenizer = AutoTokenizer.from_pretrained(bert_model_name)
+        
+        self.bert_tokenizer = AutoTokenizer.from_pretrained(bert_model_name, use_fast = False)
 
         # the model class is different in xlmr models 
         # the vocab is not in the same place as in bert

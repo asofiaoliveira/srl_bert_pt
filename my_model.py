@@ -61,17 +61,6 @@ class SrlMyModel(Model):
 
         self.bert_model = AutoModel.from_pretrained(bert_model)
 
-        # The XLM-R models do not have token_type_embeddings
-        # (the type_vocab_size is 1)
-        # but we use this to pass the verb's position
-        # so we need to change the model and initialize the embeddings randomly
-        if "xlm" in bert_model:
-            self.bert_model.config.type_vocab_size = 2 
-            # Create a new Embeddings layer, with 2 possible segments IDs instead of 1
-            self.bert_model.embeddings.token_type_embeddings = Embedding(2, self.bert_model.config.hidden_size)
-            # Initialize it
-            self.bert_model.embeddings.token_type_embeddings.weight.data.normal_(mean=0.0, std=self.bert_model.config.initializer_range)
-
 
         self.num_classes = self.vocab.get_vocab_size("labels")
         self.span_metric = SrlEvalScorer("srl-eval.pl", ignore_classes=["V"])
@@ -122,7 +111,6 @@ class SrlMyModel(Model):
             A scalar loss to be optimised.
         """
         mask = get_text_field_mask(tokens)
-        
         bert_embeddings, _ = self.bert_model(
             input_ids=util.get_token_ids_from_text_field_tensors(tokens),
             token_type_ids=verb_indicator,

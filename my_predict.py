@@ -3,7 +3,7 @@ from allennlp.predictors.predictor import Predictor
 from allennlp.models import Model
 from overrides import overrides
 from allennlp.models.archival import load_archive
-import my_model, my_reader
+import my_model, my_reader, conll_reader
 from allennlp.data import DatasetReader, Instance
 from allennlp.common.util import JsonDict
 import sys
@@ -92,14 +92,10 @@ if __name__ == "__main__":
     archive_file = sys.argv[1]
     input_text = sys.argv[2]
 
-    over=""
-    if os.path.exists("prev_model"):
-        over = "{\"model.archive_file\":\"prev_model\"}"
-
+    
     #esta é a função que demora
     archive = load_archive(
         archive_file,
-        overrides = over
     )
     #
 

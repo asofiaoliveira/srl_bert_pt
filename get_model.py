@@ -4,6 +4,7 @@ import torch
 from allennlp.data.vocabulary import Vocabulary
 import sys
 import os
+from shutil import copyfile
 
 # The model is split between this repository and Huggingface
 # This script unites the two parts and creates a folder for the 
@@ -23,4 +24,4 @@ if not os.path.exists(model_name):
 
 torch.save(model.state_dict(), model_name + "/weights.th")
 model.vocab.save_to_files(model_name + "/Vocabulary")
-os.path.copy("Models/" + model_name + "/config.json", model_name + "/config.json")
+copyfile("Models/" + model_name + "/config.json", model_name + "/config.json")
