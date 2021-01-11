@@ -5,7 +5,7 @@
 This work was developed in the context of my Master's thesis in Data Science.
 The code is based on [AllenNLP's package](https://github.com/allenai/allennlp) and the pre-trained models used came from [ðŸ¤— Transformers](https://github.com/huggingface/transformers) and [neuralmind-ai BERTimbau - Portuguese BERT](https://github.com/neuralmind-ai/portuguese-bert).
 
-There are three branches in this repository, which correspond to three different versions of the AllenNLP package. The branch [`v1.0.0rc3`](/v1.0.0rc3) contains the code used to train the models reported in the article. The branch [`v1.0.0`](/v1.0.0) contains the code used to test the models reported. The models were trained and tested in different versions because of a bug in version 1.0.0rc3 of AllenNLP which prevented testing some models. The main branch contains the code needed to make predictions with the trained models.
+There are three branches in this repository, which correspond to three different versions of the AllenNLP package. The branch [`v1.0.0rc3`](https://github.com/asofiaoliveira/srl_bert_pt/tree/v1.0.0rc3) contains the code used to train the models reported in the article. The branch [`v1.0.0`](https://github.com/asofiaoliveira/srl_bert_pt/tree/v1.0.0) contains the code used to test the models reported. The models were trained and tested in different versions because of a bug in version 1.0.0rc3 of AllenNLP which prevented testing some models. The main branch contains the code needed to make predictions with the trained models.
 
 ## Models
 
@@ -72,6 +72,7 @@ python my_predict.py srl-pt_bertimbau-large pred.txt #where pred.txt contains SÃ
 ## Choosing the best model
 
 We provide an implementation of the heuristic mentioned in the article, described by the following figure (taken from the article mentioned in [Citation](#citation)). 
+
 ![Image of heuristic](/Choose%20Best%20Model/decision_diagram_white.png)
 
 To run the `Choose Best Model/tool.py` script, you must install streamlit and mlxtend.
@@ -117,7 +118,7 @@ python xml_to_conll.py
 python create_folds.py
 ```
 
-### Train **all** the models
+### Train *all* the models
 
 ```python
 python train.py
