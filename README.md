@@ -15,6 +15,8 @@ The trained models can be obtained using the get_model.py script in the main bra
 python get_model.py [model name]
 ```
 
+This is necessary because the trained SRL model is split into two; the [transformers portion of the model](https://huggingface.co/liaad) is stored in the [🤗 Transformers community models](https://huggingface.co) and the linear layer is stored in this repository (in the folder [Models](Models/)). The `get_model.py` file joins these two portions and saves the total model in a folder `[model name]` in the repository folder. 
+
 In the following table, we present all the possible model names, a small description of the model, the average F<sub>1</sub> in the cross-validation <span>PropBank.Br</span> data sets and the average F<sub>1</sub> in the Buscapé set. For more information, please refer to the article.
 
 | Model Name | F<sub>1</sub> CV PropBank.Br (in domain) | F<sub>1</sub> Buscapé (out of domain) | Explanation |
@@ -33,6 +35,59 @@ In the following table, we present all the possible model names, a small descrip
 | `ud_srl-pt_bertimbau-large` | 77.53 | 74.49 | The (monolingual) BERTimbau<sub>large</sub> model trained first in dependency parsing with the Universal Dependecies Portuguese data set and then on Portuguese SRL data |
 | `ud_srl-pt_xlmr-large` | 77.69 | 74.91 | The (monolingual) XLM-R<sub>large</sub> model trained first in dependency parsing with the Universal Dependecies Portuguese data set and then on Portuguese SRL data |
 | `ud_srl-enpt_xlmr-large` | 77.97 | **75.05** | The (monolingual) XLM-R<sub>large</sub> model trained first in dependency parsing with the Universal Dependecies Portuguese data set, then on English SRL data (specifically a pre-processed CoNLL-2012 data set) and finally on Portuguese SRL data |
+
+
+## To Predict
+
+In order to use the trained models for SRL prediction, first install alennlp and allennlp_models v1.2.2. With pip:
+
+```bash
+pip install allennlp==1.2.2 allennlp_models==1.2.2
+```
+
+Download the main branch of this repository. From the list of available models (see Table above), choose the one most indicated for your application (see [Tool](## Tool) below for help choosing) and download the model using:
+
+```python
+python get_model.py [model name]
+```
+
+Then run the `my_predict.py` script with the chosen model and the text you want to predict SRL labels for.
+
+```python
+python my_predict.py [model name] [text/to/predict]
+```
+
+`[text/to/predict]` can be either a string or the path to a text file containing the text you want to predict SRL labels for.
+
+### Example
+
+```bash
+python get_model.py srl-pt_bertimbau-large
+
+python my_predict.py srl-pt_bertimbau-large "Só precisa ganhar experiência"
+#or
+python my_predict.py srl-pt_bertimbau-large pred.txt #where pred.txt contains Só precisa ganhar experiência
+```
+
+## Choosing the best model
+
+We provide an implementation of the heuristic mentioned in the article, described by the following figure (taken from the article mentioned in [Citation](#citation)). 
+![Image of heuristic](/Choose%20Best%20Model/decision_diagram_white.png)
+
+To run the `Choose Best Model/tool.py` script, you must install streamlit and mlxtend.
+
+```bash
+pip install streamlit mlxtend
+```
+
+Then run
+
+```bash
+streamlit run "Choose Best Model/tool.py"
+```
+
+In this application, you can choose the models of interest for your application (by removing the ones that do not interest you) and the type of data you have. The results will be the best model and plots showing the results achieved by each model in the total F<sub>1</sub> and for each role.
+
 
 ## Branch v1.0.0rc3
 
@@ -62,33 +117,36 @@ python xml_to_conll.py
 python create_folds.py
 ```
 
-### Run *all* the models
+### Train **all** the models
 
 ```python
 python train.py
 ```
 
-## To Predict
 
-You need to install allennlp and allennlp_models versions 1.0.0. With pip:
+## Branch v1.0.0rc3
+
+To reproduce the results, it is then necessary to test the results. For that, first install the pytorch package v1.6.0 with the command from their [website](https://pytorch.org/get-started/previous-versions/) according to the CUDA version of your machine, and then allennlp, allennlp_models, [iterative-stratification](https://github.com/trent-b/iterative-stratification) and pandas.
 
 ```bash
-pip install allennlp==1.0.0 allennlp_models==1.0.0 
+pip install allennlp==1.0.0 allennlp_models==1.0.0 iterative-stratification pandas
 ```
 
-Note that for Windows, you'll need to install the pytorch package before, with the command from their [website](https://pytorch.org).
+Next, clone or download the `v1.0.0` branch of this repository. 
 
-Download the master branch of this repository. You only need to run:
+The data must be manually added (same as before). The code expects there to be a `data` folder (inside the repository). Within this folder, there must be 4 folders:
+* `xml_data` -- contains the XML data for PropBank.Br v1.1, PropBank.Br v2 and Buscapé. This data can be found [here](http://www.nilc.icmc.usp.br/portlex/index.php/en/downloads).
+* `conll_data` -- contains the conll version of PropBank.Br. This data can be found [here](http://www.nilc.icmc.usp.br/portlex/index.php/en/downloads).
+* `ud` -- contains the [Portuguese Universal Depdencies](https://github.com/UniversalDependencies/UD_Portuguese-Bosque/tree/master) dataset.
+* `conll-formatted-ontonotes-5.0-12` -- contains the conll formatted OntoNotes v5.0.
+
+### Test *all* the models
 
 ```python
-python my_predict.py [path/to/model] [text/to/predict]
+python train.py
 ```
 
-The model has to be a folder (not an archive); the text to predict can be either a string or a text file.
-
-#Choose model
-#Install streamlit
-#Install mlxtend
+Besides the metrics for each test fold and Buscapé, the program also outputs for each tested pair (model,dataset) a file with the predicted and gold tags.
 
 ## Citation
 
