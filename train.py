@@ -265,9 +265,47 @@ class Evaluate():
 
 
 if __name__ == "__main__":
+    folds_dir = "data/folds_dfalci_20"
+    for model_type in ["brbert-large","brbert-base"]:
+        ser_dir = "results_" + model_type + "_dfalci"
+        PARAMS_FILE = "Configs/model_" + model_type + ".jsonnet"
+        params = Params.from_file(PARAMS_FILE)
+        Train(params, False).iterate_folds()
+
+    for model_type in ["xlmr-base_conll", "xlmr-large_conll", "mbert_conll"]:
+        ser_dir = "results_" + model_type 
+        PARAMS_FILE = "Configs/model_" + model_type + ".jsonnet"
+        params = Params.from_file(PARAMS_FILE)
+        Train(params, False).train_fold(ser_dir, 
+                                "conll-formatted-ontonotes-5.0-12/conll-formatted-ontonotes-5.0/data/train",
+                                "conll-formatted-ontonotes-5.0-12/conll-formatted-ontonotes-5.0/data/development",
+                                "")
+
+    # the models trained only on CoNLL-2012 data have a different reader, that does not read PT data
+    # so we need to override the data set reader to evaluate these models
+    e = Evaluate("xlmr-base_conll")
+    for fold_ind in range(10):
+        output_file = "test" + str(fold_ind) + ".txt"
+        file_path = os.path.dirname("xlmr-base_conll") + "/tags_" + output_file  
+        e.evaluate("folds_10" + output_file, os.path.dirname("xlmr-base_conll") + "/metrics_" + output_file, {"type": "srl-pt","bert_model_name": 'xlm-roberta-base',"token_indexers": {"tokens": {"type": "pretrained_transformer","model_name": 'xlm-roberta-base'}}})
+    e.evaluate("buscape/test0.txt",  os.path.dirname("xlmr-base_conll") + "/metrics_" +"buscape.txt", {"type": "srl-pt","bert_model_name": 'xlm-roberta-base',"token_indexers": {"tokens": {"type": "pretrained_transformer","model_name": 'xlm-roberta-base'}}})
+
+    e = Evaluate("xlmr-large_conll")
+    for fold_ind in range(10):
+        output_file = "test" + str(fold_ind) + ".txt"
+        file_path = os.path.dirname("xlmr-large_conll") + "/tags_" + output_file  
+        e.evaluate("folds_10" + output_file, "test" + str(ind) + ".txt", {"type": "srl-pt","bert_model_name": 'xlm-roberta-large',"token_indexers": {"tokens": {"type": "pretrained_transformer","model_name": 'xlm-roberta-large'}}})
+    e.evaluate("buscape/test0.txt",  os.path.dirname("xlmr-large_conll") + "/metrics_" +"buscape.txt", {"type": "srl-pt","bert_model_name": 'xlm-roberta-large',"token_indexers": {"tokens": {"type": "pretrained_transformer","model_name": 'xlm-roberta-large'}}})
+
+    e = Evaluate("mbert_conll")
+    for fold_ind in range(10):
+        output_file = "test" + str(fold_ind) + ".txt"
+        file_path = os.path.dirname("mbert_conll") + "/tags_" + output_file  
+        e.evaluate("folds_10" + output_file, "test" + str(ind) + ".txt", {"type": "srl-pt","bert_model_name": 'bert-base-multilingual-cased',"token_indexers": {"tokens": {"type": "pretrained_transformer","model_name": 'bert-base-multilingual-cased'}}})
+    e.evaluate("buscape/test0.txt",  os.path.dirname("mbert_conll") + "/metrics_" +"buscape.txt", {"type": "srl-pt","bert_model_name": 'bert-base-multilingual-cased',"token_indexers": {"tokens": {"type": "pretrained_transformer","model_name": 'bert-base-multilingual-cased'}}})
 
     #Train ud models
-    for model_type in ["xlmr-large_ud_pre"]:
+    for model_type in ["brbert-large_ud_pre", "xlmr-large_ud_pre"]:
         ser_dir = "results_" + model_type 
         PARAMS_FILE = "Configs/model_" + model_type + ".jsonnet"
         params = Params.from_file(PARAMS_FILE)
