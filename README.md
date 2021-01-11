@@ -71,7 +71,7 @@ python my_predict.py srl-pt_bertimbau-large pred.txt #where pred.txt contains SÃ
 
 We provide an implementation of the heuristic mentioned in the article, described by the following figure (taken from the article mentioned in [Citation](#citation)). 
 
-![Image of heuristic](/Choose%20Best%20Model/decision_diagram_white.png)
+![Image of heuristic](https://github.com/asofiaoliveira/srl_bert_pt/blob/main/Choose%20Best%20Model/decision_diagram_white.png)
 
 To run the `Choose Best Model/tool.py` script, you must install streamlit and mlxtend.
 
