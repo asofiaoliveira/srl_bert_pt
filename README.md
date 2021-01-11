@@ -1,20 +1,21 @@
 # Portuguese SRL
 
-
 This work was developed in the context of my Master's thesis in Data Science.
-The code is based on [AllenNLP's package](https://github.com/allenai/allennlp) and the pre-trained models used in this work came from [🤗 Transformers](https://github.com/huggingface/transformers) and [neuralmind-ai BERTimbau - Portuguese BERT](https://github.com/neuralmind-ai/portuguese-bert).
+The code is based on [AllenNLP's package](https://github.com/allenai/allennlp) and the pre-trained models used came from [🤗 Transformers](https://github.com/huggingface/transformers) and [neuralmind-ai BERTimbau - Portuguese BERT](https://github.com/neuralmind-ai/portuguese-bert).
 
-There are two branches in this repository: one with the code used to run the experiments (`reproduce`) for the thesis and one to use for predicting (`master`) (they are only slightly different). This is due to an error in the allennlp package in the version used for the experiments.
+There are three branches in this repository, which correspond to three different versions of the AllenNLP package. The branch [`v1.0.0rc3`](https://github.com/asofiaoliveira/srl_bert_pt/tree/v1.0.0rc3) contains the code used to train the models reported in the article. The branch [`v1.0.0`](https://github.com/asofiaoliveira/srl_bert_pt/tree/v1.0.0) contains the code used to test the models reported. The models were trained and tested in different versions because of a bug in version 1.0.0rc3 of AllenNLP which prevented testing some models. The main branch contains the code needed to make predictions with the trained models.
 
 ## Models
 
-The trained models can be obtained using the get_model.py script.
+The trained models can be obtained using the get_model.py script in the main branch.
 
 ```python
 python get_model.py [model name]
 ```
 
-In the following table, we present all the possible model names, which model they correspond to as well as the average F<sub>1</sub> in the cross-validation <span>PropBank.Br</span> data sets and the average F<sub>1</sub> in the Buscapé set. For more information, check the article.
+This is necessary because the trained SRL model is split into two; the [transformers portion of the model](https://huggingface.co/liaad) is stored in the [🤗 Transformers community models](https://huggingface.co) and the linear layer is stored in this repository (in the folder [Models](Models/)). The `get_model.py` file joins these two portions and saves the total model in a folder `[model name]` in the repository folder. 
+
+In the following table, we present all the possible model names, a small description of the model, the average F<sub>1</sub> in the cross-validation <span>PropBank.Br</span> data sets and the average F<sub>1</sub> in the Buscapé set. For more information, please refer to the article.
 
 | Model Name | F<sub>1</sub> CV PropBank.Br (in domain) | F<sub>1</sub> Buscapé (out of domain) | Explanation |
 | --------------- | ------ | ----- | ------- |
@@ -33,16 +34,75 @@ In the following table, we present all the possible model names, which model the
 | `ud_srl-pt_xlmr-large` | 77.69 | 74.91 | The (monolingual) XLM-R<sub>large</sub> model trained first in dependency parsing with the Universal Dependecies Portuguese data set and then on Portuguese SRL data |
 | `ud_srl-enpt_xlmr-large` | 77.97 | **75.05** | The (monolingual) XLM-R<sub>large</sub> model trained first in dependency parsing with the Universal Dependecies Portuguese data set, then on English SRL data (specifically a pre-processed CoNLL-2012 data set) and finally on Portuguese SRL data |
 
-## To reproduce
 
-To reproduce the reported results, you need first to install allennlp and allennlp_models versions 1.0.0rc3 and [iterative-stratification](https://github.com/trent-b/iterative-stratification). Note that for Windows, you'll need to install the pytorch package v1.5.0 before, with the command from their [website](https://pytorch.org). With pip:
+## To Predict
+
+In order to use the trained models for SRL prediction, first install alennlp and allennlp_models v1.2.2. With pip:
+
+```bash
+pip install allennlp==1.2.2 allennlp_models==1.2.2
+```
+
+Download the main branch of this repository. From the list of available models (see Table above), choose the one most indicated for your application (see [Tool](#choosing-the-best-model)) below for help choosing) and download the model using:
+
+```python
+python get_model.py [model name]
+```
+
+Then run the `my_predict.py` script with the chosen model and the text you want to predict SRL labels for.
+
+```python
+python my_predict.py [model name] [text/to/predict]
+```
+
+`[text/to/predict]` can be either a string or the path to a text file containing the text you want to predict SRL labels for.
+
+### Example
+
+```bash
+python get_model.py srl-pt_bertimbau-large
+
+python my_predict.py srl-pt_bertimbau-large "Só precisa ganhar experiência"
+#or
+python my_predict.py srl-pt_bertimbau-large pred.txt #where pred.txt contains Só precisa ganhar experiência
+```
+
+## Choosing the best model
+
+We provide an implementation of the heuristic mentioned in the article, described by the following figure (taken from the article mentioned in [Citation](#citation)). 
+
+![Image of heuristic](/Choose%20Best%20Model/decision_diagram_white.png)
+
+To run the `Choose Best Model/tool.py` script, you must install streamlit and mlxtend.
+
+```bash
+pip install streamlit mlxtend
+```
+
+Then run
+
+```bash
+streamlit run "Choose Best Model/tool.py"
+```
+
+In this application, you can choose the models of interest for your application (by removing the ones that do not interest you) and the type of data you have. The results will be the best model and plots showing the results achieved by each model in the total F<sub>1</sub> and for each role.
+
+
+## Branch v1.0.0rc3
+
+To reproduce the results, it is first necessary to train the models. For that, first install the pytorch package v1.5.0 with the command from their [website](https://pytorch.org/get-started/previous-versions/) according to the CUDA version of your machine, and then allennlp, allennlp_models, [iterative-stratification](https://github.com/trent-b/iterative-stratification) and pandas.
 
 ```bash
 pip install allennlp==1.0.0rc3 allennlp_models==1.0.0rc3 iterative-stratification pandas
 ```
 
+Next, clone or download the `v1.0.0rc3` branch of this repository. 
 
-Download the reproduce branch of this repository. You will also need to create a folder **data** in the same directory as the python files. In that folder, put the XML data for PropBank.Br v1.1, PropBank.Br v2 and Buscapé in a folder **xml_data**. Put the conll version of PropBank.Br in a folder **conll_data**. This data can be found [here](http://www.nilc.icmc.usp.br/portlex/index.php/en/downloads).
+The data must be manually added. The code expects there to be a `data` folder (inside the repository). Within this folder, there must be 4 folders:
+* `xml_data` -- contains the XML data for PropBank.Br v1.1, PropBank.Br v2 and Buscapé. This data can be found [here](http://www.nilc.icmc.usp.br/portlex/index.php/en/downloads).
+* `conll_data` -- contains the conll version of PropBank.Br. This data can be found [here](http://www.nilc.icmc.usp.br/portlex/index.php/en/downloads).
+* `ud` -- contains the [Portuguese Universal Depdencies](https://github.com/UniversalDependencies/UD_Portuguese-Bosque/tree/master) dataset.
+* `conll-formatted-ontonotes-5.0-12` -- contains the conll formatted OntoNotes v5.0.
 
 ### Transforming XML to CoNLL data
 
@@ -56,29 +116,36 @@ python xml_to_conll.py
 python create_folds.py
 ```
 
-### Run *all* the models
+### Train *all* the models
 
 ```python
 python train.py
 ```
 
-## To Predict
 
-You need to install allennlp and allennlp_models versions 1.0.0. With pip:
+## Branch v1.0.0rc3
+
+To reproduce the results, it is then necessary to test the results. For that, first install the pytorch package v1.6.0 with the command from their [website](https://pytorch.org/get-started/previous-versions/) according to the CUDA version of your machine, and then allennlp, allennlp_models, [iterative-stratification](https://github.com/trent-b/iterative-stratification) and pandas.
 
 ```bash
-pip install allennlp==1.0.0 allennlp_models==1.0.0 
+pip install allennlp==1.0.0 allennlp_models==1.0.0 iterative-stratification pandas
 ```
 
-Note that for Windows, you'll need to install the pytorch package before, with the command from their [website](https://pytorch.org).
+Next, clone or download the `v1.0.0` branch of this repository. 
 
-Download the master branch of this repository. You only need to run:
+The data must be manually added (same as before). The code expects there to be a `data` folder (inside the repository). Within this folder, there must be 4 folders:
+* `xml_data` -- contains the XML data for PropBank.Br v1.1, PropBank.Br v2 and Buscapé. This data can be found [here](http://www.nilc.icmc.usp.br/portlex/index.php/en/downloads).
+* `conll_data` -- contains the conll version of PropBank.Br. This data can be found [here](http://www.nilc.icmc.usp.br/portlex/index.php/en/downloads).
+* `ud` -- contains the [Portuguese Universal Depdencies](https://github.com/UniversalDependencies/UD_Portuguese-Bosque/tree/master) dataset.
+* `conll-formatted-ontonotes-5.0-12` -- contains the conll formatted OntoNotes v5.0.
+
+### Test *all* the models
 
 ```python
-python my_predict.py [path/to/model] [text/to/predict]
+python train.py
 ```
 
-The model has to be a folder (not an archive); the text to predict can be either a string or a text file.
+Besides the metrics for each test fold and Buscapé, the program also outputs for each tested pair (model,dataset) a file with the predicted and gold tags.
 
 ## Citation
 
