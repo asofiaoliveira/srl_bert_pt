@@ -278,41 +278,18 @@ if __name__ == "__main__":
         PARAMS_FILE = "Configs/model_" + model_type + ".jsonnet"
         params = Params.from_file(PARAMS_FILE)
         Train(params, False).train_fold(ser_dir, 
-                                "conll-formatted-ontonotes-5.0-12/conll-formatted-ontonotes-5.0/data/train",
-                                "conll-formatted-ontonotes-5.0-12/conll-formatted-ontonotes-5.0/data/development",
+                                "data/conll-formatted-ontonotes-5.0-12/conll-formatted-ontonotes-5.0/data/train",
+                                "data/conll-formatted-ontonotes-5.0-12/conll-formatted-ontonotes-5.0/data/development",
                                 "")
-
-    # the models trained only on CoNLL-2012 data have a different reader, that does not read PT data
-    # so we need to override the data set reader to evaluate these models
-    e = Evaluate("xlmr-base_conll")
-    for fold_ind in range(10):
-        output_file = "test" + str(fold_ind) + ".txt"
-        file_path = os.path.dirname("xlmr-base_conll") + "/tags_" + output_file  
-        e.evaluate("folds_10" + output_file, os.path.dirname("xlmr-base_conll") + "/metrics_" + output_file, {"type": "srl-pt","bert_model_name": 'xlm-roberta-base',"token_indexers": {"tokens": {"type": "pretrained_transformer","model_name": 'xlm-roberta-base'}}})
-    e.evaluate("buscape/test0.txt",  os.path.dirname("xlmr-base_conll") + "/metrics_" +"buscape.txt", {"type": "srl-pt","bert_model_name": 'xlm-roberta-base',"token_indexers": {"tokens": {"type": "pretrained_transformer","model_name": 'xlm-roberta-base'}}})
-
-    e = Evaluate("xlmr-large_conll")
-    for fold_ind in range(10):
-        output_file = "test" + str(fold_ind) + ".txt"
-        file_path = os.path.dirname("xlmr-large_conll") + "/tags_" + output_file  
-        e.evaluate("folds_10" + output_file, "test" + str(ind) + ".txt", {"type": "srl-pt","bert_model_name": 'xlm-roberta-large',"token_indexers": {"tokens": {"type": "pretrained_transformer","model_name": 'xlm-roberta-large'}}})
-    e.evaluate("buscape/test0.txt",  os.path.dirname("xlmr-large_conll") + "/metrics_" +"buscape.txt", {"type": "srl-pt","bert_model_name": 'xlm-roberta-large',"token_indexers": {"tokens": {"type": "pretrained_transformer","model_name": 'xlm-roberta-large'}}})
-
-    e = Evaluate("mbert_conll")
-    for fold_ind in range(10):
-        output_file = "test" + str(fold_ind) + ".txt"
-        file_path = os.path.dirname("mbert_conll") + "/tags_" + output_file  
-        e.evaluate("folds_10" + output_file, "test" + str(ind) + ".txt", {"type": "srl-pt","bert_model_name": 'bert-base-multilingual-cased',"token_indexers": {"tokens": {"type": "pretrained_transformer","model_name": 'bert-base-multilingual-cased'}}})
-    e.evaluate("buscape/test0.txt",  os.path.dirname("mbert_conll") + "/metrics_" +"buscape.txt", {"type": "srl-pt","bert_model_name": 'bert-base-multilingual-cased',"token_indexers": {"tokens": {"type": "pretrained_transformer","model_name": 'bert-base-multilingual-cased'}}})
 
     #Train ud models
     for model_type in ["brbert-large_ud_pre", "xlmr-large_ud_pre"]:
         ser_dir = "results_" + model_type 
-        PARAMS_FILE = "model_" + model_type + ".jsonnet"
+        PARAMS_FILE = "Configs/model_" + model_type + ".jsonnet"
         params = Params.from_file(PARAMS_FILE)
         Train(params, False).train_fold(ser_dir, 
-                                "pt_bosque-ud-train.conllu.txt",
-                                "pt_bosque-ud-dev.conllu.txt",
+                                "data/ud/pt_bosque-ud-train.conllu.txt",
+                                "data/ud/pt_bosque-ud-dev.conllu.txt",
                                 "")
 
     #Train ud + conll (english srl only)
@@ -321,19 +298,19 @@ if __name__ == "__main__":
     PARAMS_FILE = "Configs/model_" + model_type + ".jsonnet"
     params = Params.from_file(PARAMS_FILE)
     Train(params, False).train_fold(ser_dir, 
-                                "conll-formatted-ontonotes-5.0-12/conll-formatted-ontonotes-5.0/data/train",
-                                "conll-formatted-ontonotes-5.0-12/conll-formatted-ontonotes-5.0/data/development",
+                                "data/conll-formatted-ontonotes-5.0-12/conll-formatted-ontonotes-5.0/data/train",
+                                "data/conll-formatted-ontonotes-5.0-12/conll-formatted-ontonotes-5.0/data/development",
                                 "")
 
     folds_dir = "data/folds_10"
     for model_type in ["xlmr-base_en", "xlmr-large_en", "mbert_en", "xlmr-large_en_ud"]:
         ser_dir = "results_" + model_type 
-        PARAMS_FILE = "model_" + model_type + ".jsonnet"
+        PARAMS_FILE = "Configs/model_" + model_type + ".jsonnet"
         params = Params.from_file(PARAMS_FILE)
         Train(params, cont = True).iterate_folds()
 
     for model_type in ["brbert-base","brbert-large","xlmr-base", "xlmr-large", "mbert", "brbert-large_ud", "xlmr-large_ud"]:
         ser_dir = "results_" + model_type 
-        PARAMS_FILE = "model_" + model_type + ".jsonnet"
+        PARAMS_FILE = "Configs/model_" + model_type + ".jsonnet"
         params = Params.from_file(PARAMS_FILE)
         Train(params).iterate_folds()
