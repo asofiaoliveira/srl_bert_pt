@@ -45,7 +45,7 @@ In order to use the trained models for SRL prediction, first install alennlp and
 pip install allennlp==1.2.2 allennlp_models==1.2.2
 ```
 
-Download the main branch of this repository. From the list of available models (see Table above), choose the one most indicated for your application (see [Tool](## Tool) below for help choosing) and download the model using:
+Download the main branch of this repository. From the list of available models (see Table above), choose the one most indicated for your application (see [Tool](#choosing-the-best-model)) below for help choosing) and download the model using:
 
 ```python
 python get_model.py [model name]
