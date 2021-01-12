@@ -1,6 +1,4 @@
-*work in progress*
-
-# Portuguese SRL
+# Semantic Role Labeling in Portuguese: Improving the State of the Art with Transfer Learning and BERT-based Models
 
 This work was developed in the context of my Master's thesis in Data Science.
 The code is based on [AllenNLP's package](https://github.com/allenai/allennlp) and the pre-trained models used came from [🤗 Transformers](https://github.com/huggingface/transformers) and [neuralmind-ai BERTimbau - Portuguese BERT](https://github.com/neuralmind-ai/portuguese-bert).
@@ -11,11 +9,11 @@ There are three branches in this repository, which correspond to three different
 
 The trained models can be obtained using the get_model.py script in the main branch.
 
-```python
+```bash
 python get_model.py [model name]
 ```
 
-This is necessary because the trained SRL model is split into two; the [transformers portion of the model](https://huggingface.co/liaad) is stored in the [🤗 Transformers community models](https://huggingface.co) and the linear layer is stored in this repository (in the folder [Models](Models/)). The `get_model.py` file joins these two portions and saves the total model in a folder `[model name]` in the repository folder. 
+This is necessary because the trained SRL model is split into two; the [transformers portion of the model](https://huggingface.co/liaad) is stored in the [🤗 Transformers community models](https://huggingface.co) and the linear layer is stored in this repository (in the folder [Models](Models/)). The `get_model.py` file joins these two portions and saves the complete model in a folder `[model name]`. 
 
 In the following table, we present all the possible model names, a small description of the model, the average F<sub>1</sub> in the cross-validation <span>PropBank.Br</span> data sets and the average F<sub>1</sub> in the Buscapé set. For more information, please refer to the article.
 
@@ -47,13 +45,13 @@ pip install allennlp==1.2.2 allennlp_models==1.2.2
 
 Download the main branch of this repository. From the list of available models (see Table above), choose the one most indicated for your application (see [Tool](#choosing-the-best-model)) below for help choosing) and download the model using:
 
-```python
+```bash
 python get_model.py [model name]
 ```
 
 Then run the `my_predict.py` script with the chosen model and the text you want to predict SRL labels for.
 
-```python
+```bash
 python my_predict.py [model name] [text/to/predict]
 ```
 
@@ -75,19 +73,15 @@ We provide an implementation of the heuristic mentioned in the article, describe
 
 ![Image of heuristic](/Choose%20Best%20Model/decision_diagram_white.png)
 
-To run the `Choose Best Model/tool.py` script, you must install streamlit and mlxtend.
+To run the `Choose Best Model/tool.py` script, you must install streamlit.
 
 ```bash
-pip install streamlit mlxtend
-```
+pip install streamlit
 
-Then run
-
-```bash
 streamlit run "Choose Best Model/tool.py"
 ```
 
-In this application, you can choose the models of interest for your application (by removing the ones that do not interest you) and the type of data you have. The results will be the best model and plots showing the results achieved by each model in the total F<sub>1</sub> and for each role.
+In this app, you can choose the semantic roles of interest for your application (by removing the ones that do not interest you) and the type of data you have. The results will be the best model and plots showing the total F<sub>1</sub> measure and the F<sub>1</sub> measure for each role achieved by each model.
 
 
 ## Branch v1.0.0rc3
@@ -100,7 +94,7 @@ pip install allennlp==1.0.0rc3 allennlp_models==1.0.0rc3 iterative-stratificatio
 
 Next, clone or download the `v1.0.0rc3` branch of this repository. 
 
-The data must be manually added. The code expects there to be a `data` folder (inside the repository). Within this folder, there must be 4 folders:
+The data must be manually added. The code expects there to be a `data` folder (inside the folder with this repository). Within this folder, there must be 4 folders:
 * `xml_data` -- contains the XML data for PropBank.Br v1.1, PropBank.Br v2 and Buscapé. This data can be found [here](http://www.nilc.icmc.usp.br/portlex/index.php/en/downloads).
 * `conll_data` -- contains the conll version of PropBank.Br. This data can be found [here](http://www.nilc.icmc.usp.br/portlex/index.php/en/downloads).
 * `ud` -- contains the [Portuguese Universal Depdencies](https://github.com/UniversalDependencies/UD_Portuguese-Bosque/tree/master) dataset.
@@ -108,26 +102,26 @@ The data must be manually added. The code expects there to be a `data` folder (i
 
 ### Transforming XML to CoNLL data
 
-``` python
+``` bash
 python xml_to_conll.py
 ```
 
 ### Create folds
 
-```python
+```bash
 python create_folds.py
 ```
 
 ### Train *all* the models
 
-```python
+```bash
 python train.py
 ```
 
 
-## Branch v1.0.0rc3
+## Branch v1.0.0
 
-To reproduce the results, it is then necessary to test the results. For that, first install the pytorch package v1.6.0 with the command from their [website](https://pytorch.org/get-started/previous-versions/) according to the CUDA version of your machine, and then allennlp, allennlp_models, [iterative-stratification](https://github.com/trent-b/iterative-stratification) and pandas.
+To reproduce the results, it is then necessary to test the models. For that, first install the pytorch package v1.6.0 with the command from their [website](https://pytorch.org/get-started/previous-versions/) according to the CUDA version of your machine, and then allennlp, allennlp_models, [iterative-stratification](https://github.com/trent-b/iterative-stratification) and pandas.
 
 ```bash
 pip install allennlp==1.0.0 allennlp_models==1.0.0 iterative-stratification pandas
@@ -135,15 +129,11 @@ pip install allennlp==1.0.0 allennlp_models==1.0.0 iterative-stratification pand
 
 Next, clone or download the `v1.0.0` branch of this repository. 
 
-The data must be manually added (same as before). The code expects there to be a `data` folder (inside the repository). Within this folder, there must be 4 folders:
-* `xml_data` -- contains the XML data for PropBank.Br v1.1, PropBank.Br v2 and Buscapé. This data can be found [here](http://www.nilc.icmc.usp.br/portlex/index.php/en/downloads).
-* `conll_data` -- contains the conll version of PropBank.Br. This data can be found [here](http://www.nilc.icmc.usp.br/portlex/index.php/en/downloads).
-* `ud` -- contains the [Portuguese Universal Depdencies](https://github.com/UniversalDependencies/UD_Portuguese-Bosque/tree/master) dataset.
-* `conll-formatted-ontonotes-5.0-12` -- contains the conll formatted OntoNotes v5.0.
+The data must be manually added -- simply copy the `data` folder obtained previously.
 
 ### Test *all* the models
 
-```python
+```bash
 python train.py
 ```
 
@@ -151,7 +141,7 @@ Besides the metrics for each test fold and Buscapé, the program also outputs fo
 
 ## Citation
 
-```
+```bibtex
 @misc{oliveira2021transformers,
       title={Transformers and Transfer Learning for Improving Portuguese Semantic Role Labeling}, 
       author={Sofia Oliveira and Daniel Loureiro and Alípio Jorge},
