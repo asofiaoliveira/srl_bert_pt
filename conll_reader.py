@@ -22,6 +22,9 @@ from allennlp_models.syntax.srl.srl_reader import _convert_verb_indices_to_wordp
 # The changes are due to the needed preprocessing for the English CoNLL-2012 data
 # to match the Portuguese data
 
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)  
+
 class Ontonotes_mine:
     def __init__(self):
         self.flag = []
