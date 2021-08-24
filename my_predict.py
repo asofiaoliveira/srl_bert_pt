@@ -15,6 +15,9 @@ from allennlp.common.file_utils import cached_path
 from nltk import tokenize, download
 download('punkt')
 
+import logging
+logging.getLogger('allennlp').setLevel(logging.WARNING)
+
 @Predictor.register("my_predictor")
 class predict(SemanticRoleLabelerPredictor):
     def __init__(
@@ -29,7 +32,7 @@ class predict(SemanticRoleLabelerPredictor):
 
     @overrides
     def dump_line(self, outputs) -> str:
-        output_file=open("output.txt", "w",encoding="utf-8")
+        output_file=open("output.txt", "a",encoding="utf-8")
         return json.dump(outputs, output_file,ensure_ascii=False)
 
 

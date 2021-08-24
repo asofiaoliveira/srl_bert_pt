@@ -115,6 +115,7 @@ class SrlMyModel(Model):
             input_ids=util.get_token_ids_from_text_field_tensors(tokens),
             token_type_ids=verb_indicator,
             attention_mask=mask,
+            return_dict=False
         )
         
         embedded_text_input = self.embedding_dropout(bert_embeddings)
