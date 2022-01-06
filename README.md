@@ -142,12 +142,14 @@ Besides the metrics for each test fold and Buscapé, the program also outputs fo
 ## Citation
 
 ```bibtex
-@misc{oliveira2021transformers,
-      title={Transformers and Transfer Learning for Improving Portuguese Semantic Role Labeling}, 
-      author={Sofia Oliveira and Daniel Loureiro and Alípio Jorge},
-      year={2021},
-      eprint={2101.01213},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL}
+@INPROCEEDINGS{9564238,  
+      author={Oliveira, Sofia and Loureiro, Daniel and Jorge, Alípio},  
+      booktitle={2021 IEEE 8th International Conference on Data Science and Advanced Analytics (DSAA)},   
+      title={Improving Portuguese Semantic Role Labeling with Transformers and Transfer Learning},   
+      year={2021},  
+      volume={},  
+      number={},  
+      pages={1-9},  
+      doi={10.1109/DSAA53316.2021.9564238}
 }
 ```
