@@ -52,10 +52,12 @@ python get_model.py [model name]
 Then run the `my_predict.py` script with the chosen model and the text you want to predict SRL labels for.
 
 ```bash
-python my_predict.py [model name] [text/to/predict]
+python my_predict.py [model name] [text/to/predict] ([lang])
 ```
 
-`[text/to/predict]` can be either a string or the path to a text file containing the text you want to predict SRL labels for.
+`[text/to/predict]` can be either a string or the path to a text file containing the text you want to predict SRL labels for. `[lang]` is an optional argument for when you want to predict english sentences. For portuguese, nothing should be written after `[text/to/predict]`. For english, write anything there.
+
+The results are written to `output.txt`. Note that if you run this several times, the results are added to the existing file, it is not overwritten.
 
 ### Example
 
@@ -65,6 +67,9 @@ python get_model.py srl-pt_bertimbau-large
 python my_predict.py srl-pt_bertimbau-large "Só precisa ganhar experiência"
 #or
 python my_predict.py srl-pt_bertimbau-large pred.txt #where pred.txt contains Só precisa ganhar experiência
+
+#For english:
+python my_predict.py srl-pt_bertimbau-large "John read a book." english
 ```
 
 ## Choosing the best model
