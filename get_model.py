@@ -23,5 +23,5 @@ if not os.path.exists(model_name):
     os.mkdir(model_name)
 
 torch.save(model.state_dict(), model_name + "/weights.th")
-model.vocab.save_to_files(model_name + "/Vocabulary")
+model.vocab.save_to_files(model_name + "/vocabulary")
 copyfile("Models/" + model_name + "/config.json", model_name + "/config.json")
