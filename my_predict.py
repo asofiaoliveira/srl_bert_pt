@@ -120,3 +120,5 @@ if __name__ == "__main__":
     if os.path.exists("tmp.txt"):
         os.remove("tmp.txt")
 
+    with open("output.txt", "a") as f:
+        f.write("\n")
