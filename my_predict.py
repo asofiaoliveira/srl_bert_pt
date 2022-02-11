@@ -23,7 +23,7 @@ class predict(SemanticRoleLabelerPredictor):
     def __init__(
         self, model: Model, dataset_reader: DatasetReader
     ) -> None:
-        super().__init__(model, dataset_reader, "pt_core_news_sm")
+        super().__init__(model, dataset_reader, spacy_model)
 
     @overrides
     def load_line(self, line: str) -> Iterator[str]:
@@ -94,14 +94,16 @@ class predictManager(_PredictManager):
 if __name__ == "__main__":
     archive_file = sys.argv[1]
     input_text = sys.argv[2]
+    lang = sys.argv[3] if len(sys.argv) == 4 else "pt"
+    if lang == "pt":
+        spacy_model = "pt_core_news_sm"
+    else:
+        spacy_model = "en_core_web_sm"
 
-    
     #esta é a função que demora
     archive = load_archive(
         archive_file,
     )
-    #
-
 
     if not os.path.isfile(input_text):
         f = open("tmp.txt", "w+", encoding="utf-8")
@@ -109,7 +111,7 @@ if __name__ == "__main__":
         input_text = "tmp.txt"
         f.close()
 
-    
+
     predictor = Predictor.from_archive(
         archive, "my_predictor", dataset_reader_to_load="train"
     )
